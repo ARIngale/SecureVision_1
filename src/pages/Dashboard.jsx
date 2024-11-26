@@ -1,5 +1,5 @@
 import { React,useState } from 'react';
-import {Home, Users, UserPlus, Shield, Key,RefreshCw } from 'lucide-react';
+import {Home, ChevronLeft,ChevronRight,Users, UserPlus, Shield, Key,RefreshCw } from 'lucide-react';
 
 const StatCard = ({ title, value, icon: Icon, color, description }) => (
   <div className="bg-black rounded-lg p-6 w-full md:w-full shadow-lg hover:shadow-2xl transition-all duration-300 ease-in-out">
@@ -51,7 +51,7 @@ const CalendarComponent = () => {
           onClick={handlePrevMonth}
           className="text-gray-400 bg-slate-900 hover:bg-blue-600 hover:text-white w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300 ease-in-out"
         >
-          &lt;
+          <ChevronLeft/>
         </button>
 
         <h3 className="text-lg font-semibold text-white">
@@ -62,7 +62,7 @@ const CalendarComponent = () => {
           onClick={handleNextMonth}
           className="text-gray-400 bg-slate-900 hover:bg-blue-600 hover:text-white w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300 ease-in-out"
         >
-          &gt;
+         <ChevronRight/>
         </button>
       </div>
       <div className="grid grid-cols-7 gap-1 mb-4">
@@ -176,54 +176,54 @@ const Dashboard = () => {
   return (
     <div className="space-y-6">
        <div className="flex items-center space-x-4">
-          <Home className="h-8 w-8 text-gray-400" />
+          <Home className="h-8 w-8 text-blue-400" />
           <h1 className="text-3xl font-bold text-white">Dashboard</h1>
       </div>
-  <div className="flex flex-col lg:flex-row gap-6">
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 w-full">
+      <div className="flex flex-col lg:flex-row gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 w-full">
+        <StatCard
+      title="Total Users"
+      value="1,234"
+      icon={Users}
+      color="text-blue-400"
+      description="The total number of registered users on the platform."
+    />
+
     <StatCard
-  title="Total Users"
-  value="1,234"
-  icon={Users}
-  color="text-blue-400"
-  description="The total number of registered users on the platform."
-/>
+      title="Active Roles"
+      value="15"
+      icon={UserPlus}
+      color="text-green-400"
+      description="Roles actively assigned to users."
+    />
 
-<StatCard
-  title="Active Roles"
-  value="15"
-  icon={UserPlus}
-  color="text-green-400"
-  description="Roles actively assigned to users."
-/>
+    <StatCard
+      title="Permissions"
+      value="56"
+      icon={Shield}
+      color="text-yellow-400"
+      description="Different types of permissions available for customization."
+    />
 
-<StatCard
-  title="Permissions"
-  value="56"
-  icon={Shield}
-  color="text-yellow-400"
-  description="Different types of permissions available for customization."
-/>
+    <StatCard
+      title="API Keys"
+      value="8"
+      icon={Key}
+      color="text-purple-400"
+      description="API keys currently generated for system integration."
+    />
 
-<StatCard
-  title="API Keys"
-  value="8"
-  icon={Key}
-  color="text-purple-400"
-  description="API keys currently generated for system integration."
-/>
+        </div>
+        <div className="w-full lg:w-3/4">
+        <RBACAdminCard />
+        </div>
+        <div className="w-full lg:w-3/5">
+          <CalendarComponent />
+        </div>
+      </div>
 
+      <RecentActivity />
     </div>
-    <div className="w-full lg:w-3/4">
-    <RBACAdminCard />
-    </div>
-    <div className="w-full lg:w-3/5">
-      <CalendarComponent />
-    </div>
-  </div>
-
-  <RecentActivity />
-</div>
 
   );
 };

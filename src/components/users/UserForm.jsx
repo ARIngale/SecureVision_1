@@ -1,129 +1,95 @@
-import { useState } from 'react';
+import React from 'react';
+import { X } from 'lucide-react';
 
-export default function UserForm() {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    role: '',
-    status: 'active'
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevState => ({ ...prevState, [name]: value }));
-  };
-
+const UserForm = ({ onClose, onSave, editingUser }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Here you would typically send the data to your backend
+    const formData = new FormData(e.target);
+    const userData = Object.fromEntries(formData.entries());
+    onSave(userData);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4">
-      <div className="mb-4 md:flex md:justify-between">
-        <div className="md:w-1/2 md:mr-2 mb-4 md:mb-0">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="firstName">
-            First Name
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="firstName"
-            type="text"
-            placeholder="First Name"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="md:w-1/2 md:ml-2">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="lastName">
-            Last Name
-          </label>
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="lastName"
-            type="text"
-            placeholder="Last Name"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleChange}
-            required
-          />
-        </div>
-      </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-          Email
-        </label>
-        <input
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="email"
-          type="email"
-          placeholder="Email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="role">
-          Role
-        </label>
-        <select
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="role"
-          name="role"
-          value={formData.role}
-          onChange={handleChange}
-          required
-        >
-          <option value="">Select a role</option>
-          <option value="admin">Admin</option>
-          <option value="editor">Editor</option>
-          <option value="viewer">Viewer</option>
-        </select>
-      </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2">
-          Status
-        </label>
-        <div className="mt-2">
-          <label className="inline-flex items-center mr-6">
-            <input
-              type="radio"
-              className="form-radio"
-              name="status"
-              value="active"
-              checked={formData.status === 'active'}
-              onChange={handleChange}
-            />
-            <span className="ml-2">Active</span>
-          </label>
-          <label className="inline-flex items-center">
-            <input
-              type="radio"
-              className="form-radio"
-              name="status"
-              value="inactive"
-              checked={formData.status === 'inactive'}
-              onChange={handleChange}
-            />
-            <span className="ml-2">Inactive</span>
-          </label>
-        </div>
-      </div>
-      <div className="flex items-center justify-between">
+    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+      <div className="bg-gray-900 text-gray-200 rounded-lg p-6 w-full max-w-md relative shadow-lg">
         <button
-          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors duration-200"
-          type="submit"
+          onClick={onClose}
+          className="absolute top-4 right-4 p-2 rounded-full bg-gray-700 text-gray-200 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-150"
         >
-          Add User
+          <X className="h-5 w-5" />
         </button>
+        <h3 className="text-xl font-bold mb-4">{editingUser ? 'Edit User Details' : 'Add New User'}</h3>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium">Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              className="mt-1 block w-full border border-gray-700 rounded-md shadow-sm py-2 px-3 bg-gray-800 text-gray-200 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+              defaultValue={editingUser?.name}
+              placeholder="Enter user name"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              className="mt-1 block w-full border border-gray-700 rounded-md shadow-sm py-2 px-3 bg-gray-800 text-gray-200 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+              defaultValue={editingUser?.email}
+              placeholder="Enter user email"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="role" className="block text-sm font-medium">Role</label>
+            <select
+              id="role"
+              name="role"
+              className="mt-1 block w-full border border-gray-700 rounded-md shadow-sm py-2 px-3 bg-gray-800 text-gray-200 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+              defaultValue={editingUser?.role}
+              required
+            >
+              <option value="Admin">Admin</option>
+              <option value="Editor">Editor</option>
+              <option value="Viewer">Viewer</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="status" className="block text-sm font-medium">Status</label>
+            <select
+              id="status"
+              name="status"
+              className="mt-1 block w-full border border-gray-700 rounded-md shadow-sm py-2 px-3 bg-gray-800 text-gray-200 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+              defaultValue={editingUser?.status}
+              required
+            >
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+          <div className="flex justify-end space-x-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 border border-gray-600 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+            >
+              {editingUser ? 'Update' : 'Create'}
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
+    </div>
   );
-}
+};
+
+export default UserForm;

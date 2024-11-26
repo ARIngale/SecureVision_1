@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import {Home, X, Plus, Edit2, Trash2, Search, ChevronDown, ChevronUp, Filter, FilterX } from 'lucide-react';
+import { UsersRound, Plus, Search, Filter, FilterX } from 'lucide-react';
+import UserForm from '../components/users/UserForm';
+import UserList from '../components/users/UserList';
 
 export default function Users() {
   const [showForm, setShowForm] = useState(false);
@@ -54,6 +56,15 @@ export default function Users() {
     setFilterCriteria(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleSave = (userData) => {
+    if (editingUser) {
+      setUsers(users.map(user => user.id === editingUser.id ? { ...user, ...userData } : user));
+    } else {
+      setUsers([...users, { ...userData, id: Date.now() }]);
+    }
+    setShowForm(false);
+  };
+
   const filteredUsers = users.filter(
     (user) =>
       (user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -80,12 +91,10 @@ export default function Users() {
   return (
     <div className="space-y-6 relative text-white p-4 sm:p-6">
       <div className="flex items-center space-x-4">
-          <Home className="h-8 w-8 text-gray-400" />
-          <h1 className="text-3xl font-bold text-white">User</h1>
+        <UsersRound className="h-8 w-8 text-blue-400" />
+        <h1 className="text-3xl font-bold text-white">User</h1>
       </div>
       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center space-y-4 lg:space-y-0">
-
-      
         <div className="w-full lg:w-64">
           <div className="relative">
             <input
@@ -152,188 +161,20 @@ export default function Users() {
         </div>
       )}
 
-      <div className="overflow-x-auto bg-black rounded-lg shadow-lg">
-        <table className="min-w-full divide-y divide-gray-700">
-          <thead className="bg-gray-800">
-            <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider cursor-pointer" onClick={() => handleSort('name')}>
-                <div className="flex items-center">
-                  Name
-                  {sortConfig.key === 'name' && (
-                    sortConfig.direction === 'ascending' ? (
-                      <ChevronUp className="ml-1 h-4 w-4" />
-                    ) : (
-                      <ChevronDown className="ml-1 h-4 w-4" />
-                    )
-                  )}
-                </div>
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider cursor-pointer hidden lg:table-cell" onClick={() => handleSort('email')}>
-                <div className="flex items-center">
-                  Email
-                  {sortConfig.key === 'email' && (
-                    sortConfig.direction === 'ascending' ? (
-                      <ChevronUp className="ml-1 h-4 w-4" />
-                    ) : (
-                      <ChevronDown className="ml-1 h-4 w-4" />
-                    )
-                  )}
-                </div>
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider cursor-pointer hidden lg:table-cell" onClick={() => handleSort('role')}>
-                <div className="flex items-center">
-                  Role
-                  {sortConfig.key === 'role' && (
-                    sortConfig.direction === 'ascending' ? (
-                      <ChevronUp className="ml-1 h-4 w-4" />
-                    ) : (
-                      <ChevronDown className="ml-1 h-4 w-4" />
-                    )
-                  )}
-                </div>
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider cursor-pointer hidden lg:table-cell" onClick={() => handleSort('status')}>
-                <div className="flex items-center">
-                  Status
-                  {sortConfig.key === 'status' && (
-                    sortConfig.direction === 'ascending' ? (
-                      <ChevronUp className="ml-1 h-4 w-4" />
-                    ) : (
-                      <ChevronDown className="ml-1 h-4 w-4" />
-                    )
-                  )}
-                </div>
-              </th>
-              <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider hidden lg:table-cell">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-black divide-y divide-gray-700">
-            {sortedUsers.map((user) => (
-              <tr key={user.id} className="hover:bg-gray-700 transition-colors duration-150">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center">
-                    <div className="text-sm font-medium text-white">{user.name}</div>
-                    <span className="lg:hidden ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-opacity-10 text-opacity-80 bg-gray-400 text-gray-300">
-                      {user.status}
-                    </span>
-                  </div>
-                  <div className="text-sm text-gray-400 lg:hidden">{user.email}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
-                  <div className="text-sm text-gray-400">{user.email}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
-                  <div className="text-sm text-gray-400">{user.role}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
-                  <span
-                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      user.status === 'Active'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                    }`}
-                  >
-                    {user.status}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium hidden lg:table-cell">
-                  <button
-                    onClick={() => handleEdit(user)}
-                    className="text-primary-400 hover:text-primary-200 mr-2 transition-colors duration-150"
-                  >
-                    <Edit2 className="h-5 w-5" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(user.id)}
-                    className="text-red-500 hover:text-red-400 transition-colors duration-150"
-                  >
-                    <Trash2 className="h-5 w-5" />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <UserList
+        users={sortedUsers}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        sortConfig={sortConfig}
+        onSort={handleSort}
+      />
 
       {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-900 text-gray-200 rounded-lg p-6 w-full max-w-md relative shadow-lg">
-            <button
-              onClick={handleCloseForm}
-              className="absolute top-4 right-4 p-2 rounded-full bg-gray-700 text-gray-200 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-150"
-            >
-              <X className="h-5 w-5" />
-            </button>
-            <h3 className="text-xl font-bold mb-4">{editingUser ? 'Edit User Details' : 'Add New User'}</h3>
-            <form className="space-y-5">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium">Name</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  className="mt-1 block w-full border border-gray-700 rounded-md shadow-sm py-2 px-3 bg-gray-800 text-gray-200 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                  defaultValue={editingUser?.name}
-                  placeholder="Enter user name"
-                />
-              </div>
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  className="mt-1 block w-full border border-gray-700 rounded-md shadow-sm py-2 px-3 bg-gray-800 text-gray-200 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                  defaultValue={editingUser?.email}
-                  placeholder="Enter user email"
-                />
-              </div>
-              <div>
-                <label htmlFor="role" className="block text-sm font-medium">Role</label>
-                <select
-                  id="role"
-                  name="role"
-                  className="mt-1 block w-full border border-gray-700 rounded-md shadow-sm py-2 px-3 bg-gray-800 text-gray-200 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                  defaultValue={editingUser?.role}
-                >
-                  <option value="Admin">Admin</option>
-                  <option value="Editor">Editor</option>
-                  <option value="Viewer">Viewer</option>
-                </select>
-              </div>
-              <div>
-                <label htmlFor="status" className="block text-sm font-medium">Status</label>
-                <select
-                  id="status"
-                  name="status"
-                  className="mt-1 block w-full border border-gray-700 rounded-md shadow-sm py-2 px-3 bg-gray-800 text-gray-200 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                  defaultValue={editingUser?.status}
-                >
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
-                </select>
-              </div>
-              <div className="flex justify-end space-x-4">
-                <button
-                  type="button"
-                  onClick={handleCloseForm}
-                  className="px-4 py-2 border border-gray-600 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                >
-                  {editingUser ? 'Update' : 'Create'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <UserForm
+          onClose={handleCloseForm}
+          onSave={handleSave}
+          editingUser={editingUser}
+        />
       )}
     </div>
   );

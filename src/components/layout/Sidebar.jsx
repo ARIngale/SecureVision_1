@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Users, Shield, Key, Settings,Lock, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Home, UsersRound, Shield, Key, Settings,Lock, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const location = useLocation();
@@ -21,7 +21,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
   const menuItems = [
     { name: 'Dashboard', icon: Home, path: '/' },
-    { name: 'Users', icon: Users, path: '/users' },
+    { name: 'Users', icon: UsersRound, path: '/users' },
     { name: 'Roles', icon: Shield, path: '/roles' },
     { name:'Permissions', icon: Lock, path: '/permissions' },
     { name: 'ApiKeys', icon: Key, path: '/apikeys' },
@@ -53,7 +53,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         </button>
       </div>
 
-      <nav className="p-4 space-y-1">
+      <nav className="p-4 space-y-1.5">
         {menuItems.map((item) => (
           <Link
             key={item.name}

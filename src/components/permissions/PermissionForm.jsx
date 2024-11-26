@@ -1,101 +1,102 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { X } from 'lucide-react';
 
-export default function PermissionForm() {
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    resource: '',
-    action: '',
-  });
+const PermissionsForm = ({ onClose, onSave, editingPermission }) => {
+  const [permission, setPermission] = useState(editingPermission || { name: '', description: '', roles: [], resourceType: '', impact: 'Low' });
+
+  useEffect(() => {
+    if (editingPermission) {
+      setPermission(editingPermission);
+    }
+  }, [editingPermission]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
+    setPermission(prevPermission => ({ ...prevPermission, [name]: value }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Here you would typically send the data to your backend
+    onSave(permission);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4">
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-          Permission Name
-        </label>
-        <input
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="name"
-          type="text"
-          placeholder="Permission Name"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
-          Description
-        </label>
-        <textarea
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="description"
-          placeholder="Permission Description"
-          rows="3"
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          required
-        ></textarea>
-      </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="resource">
-          Resource
-        </label>
-        <input
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="resource"
-          type="text"
-          placeholder="Resource (e.g., Users, Roles, Articles)"
-          name="resource"
-          value={formData.resource}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="action">
-          Action
-        </label>
-        <select
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="action"
-          name="action"
-          value={formData.action}
-          onChange={handleChange}
-          required
-        >
-          <option value="">Select an action</option>
-          <option value="create">Create</option>
-          <option value="read">Read</option>
-          <option value="update">Update</option>
-          <option value="delete">Delete</option>
-        </select>
-      </div>
-      <div className="flex items-center justify-between">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-gray-900 rounded-lg p-6 w-full max-w-md relative">
         <button
-          className="bg-primary-500 hover:bg-primary-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors duration-200"
-          type="submit"
+          onClick={onClose}
+          className="absolute top-4 right-4 p-2 rounded-full bg-gray-700 text-gray-300 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
         >
-          Add Permission
+          <X className="h-5 w-5" />
         </button>
+        <h3 className="text-lg font-semibold text-white mb-4">{editingPermission ? 'Edit Permission' : 'Add New Permission'}</h3>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-300">Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={permission.name}
+              onChange={handleChange}
+              className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label htmlFor="description" className="block text-sm font-medium text-gray-300">Description</label>
+            <textarea
+              id="description"
+              name="description"
+              rows="3"
+              value={permission.description}
+              onChange={handleChange}
+              className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            ></textarea>
+          </div>
+          <div>
+            <label htmlFor="resourceType" className="block text-sm font-medium text-gray-300">Resource Type</label>
+            <input
+              type="text"
+              id="resourceType"
+              name="resourceType"
+              value={permission.resourceType}
+              onChange={handleChange}
+              className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label htmlFor="impact" className="block text-sm font-medium text-gray-300">Impact Level</label>
+            <select
+              id="impact"
+              name="impact"
+              value={permission.impact}
+              onChange={handleChange}
+              className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+            </select>
+          </div>
+          <div className="flex justify-end space-x-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-colors duration-200"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-colors duration-200"
+            >
+              {editingPermission ? 'Update' : 'Create'}
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
+    </div>
   );
-}
+};
+
+export default PermissionsForm;

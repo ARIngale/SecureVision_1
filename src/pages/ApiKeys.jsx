@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Key, Plus, Edit2, Trash2, Search, Copy } from 'lucide-react';
+import { Key, Plus, FilePenLine, Trash, Search, Copy } from 'lucide-react';
 
 export default function ApiKeys() {
   const [apiKeys, setApiKeys] = useState([
@@ -33,23 +33,21 @@ export default function ApiKeys() {
   return (
     <div className="space-y-6 p-6 min-h-screen">
       <div className="bg-transparent shadow-md rounded-lg overflow-hidden">
-        <div className="p-4 bg-transparent text-white flex justify-between items-center">
-         
-            <div className="flex items-center space-x-4">
-        <Key className="h-8 w-8 text-gray-400" />
-        <h1 className="text-3xl font-bold text-white">API Keys</h1>
-      </div>
+        <div className="p-4 bg-transparent text-white flex flex-col lg:flex-row justify-between items-center">
+          <div className="flex items-center space-x-4">
+            <Key className="h-8 w-8 text-blue-400" />
+            <h1 className="text-3xl font-bold text-white">API Keys</h1>
+          </div>
           <div className="flex items-center space-x-4">
             <div className="relative">
-              
-                <input
-              type="text"
-              placeholder="Search users..."
-              className="w-full pl-10 pr-4 py-2 bg-black text-white placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              <input
+                type="text"
+                placeholder="Search users..."
+                className="w-full pl-10 pr-4 py-2 bg-black text-white placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
-            <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+              <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
             </div>
           </div>
         </div>
@@ -68,15 +66,15 @@ export default function ApiKeys() {
                     <div className="flex space-x-2">
                       <button
                         onClick={() => handleEdit(apiKey)}
-                        className="p-2 text-gray-400 hover:text-white transition-colors duration-150"
+                        className="p-2 text-primary-400 hover:text-primary-200 transition-colors duration-150"
                       >
-                        <Edit2 className="h-5 w-5" />
+                        <FilePenLine className="h-5 w-5" />
                       </button>
                       <button
                         onClick={() => handleDelete(apiKey.id)}
-                        className="p-2 text-gray-400 hover:text-white transition-colors duration-150"
+                        className="p-2 text-red-400 hover:text-red-300 transition-colors duration-150"
                       >
-                        <Trash2 className="h-5 w-5" />
+                        <Trash className="h-5 w-5" />
                       </button>
                     </div>
                   </div>
@@ -89,7 +87,7 @@ export default function ApiKeys() {
                     />
                     <button
                       onClick={() => navigator.clipboard.writeText(apiKey.key)}
-                      className="p-2 bg-transparent text-gray-300 rounded hover:bg-gray-800 transition-colors duration-150"
+                      className="p-2 bg-transparent text-blue-400 rounded hover:text-blue-300 transition-colors duration-150"
                     >
                       <Copy className="h-5 w-5" />
                     </button>
@@ -100,7 +98,7 @@ export default function ApiKeys() {
           ) : (
             <div className="flex items-center justify-center h-64">
               <div className="text-center">
-                <Key className="mx-auto h-12 w-12 text-gray-400" />
+                <Key className="mx-auto h-12 w-12 text-blue-400" />
                 <h3 className="mt-2 text-sm font-medium text-gray-300">No API Keys</h3>
                 <p className="mt-1 text-sm text-gray-400">Get started by creating a new API key.</p>
               </div>
@@ -111,7 +109,7 @@ export default function ApiKeys() {
       <div className="mt-6 flex justify-center">
         <button
           onClick={handleAddNew}
-          className="flex items-center justify-center px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition-colors duration-150"
+          className="flex items-center justify-center px-4 py-2 bg-black text-white rounded-md hover:bg-gray-700 transition-colors duration-150"
         >
           <Plus className="h-5 w-5 mr-2" />
           <span>Add New API Key</span>
@@ -119,7 +117,7 @@ export default function ApiKeys() {
       </div>
       {showForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 rounded-lg p-6 w-full max-w-md">
+          <div className="bg-gray-900 rounded-lg p-6 w-full max-w-md">
             <h3 className="text-lg font-semibold text-white mb-4">{editingKey ? 'Edit API Key' : 'Add New API Key'}</h3>
             <form className="space-y-4">
               <div>
@@ -151,8 +149,6 @@ export default function ApiKeys() {
           </div>
         </div>
       )}
-
-      </div>
+    </div>
   );
 }
-

@@ -1,101 +1,119 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { X, Plus } from 'lucide-react';
 
-export default function RoleForm() {
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    permissions: [],
-  });
+const RolesForm = ({ onClose, onSave, editingRole }) => {
+  const [role, setRole] = useState(editingRole || { name: '', description: '', permissions: [], riskLevel: 'Low' });
 
-  const allPermissions = [
-    { id: 'read_users', name: 'Read Users' },
-    { id: 'write_users', name: 'Write Users' },
-    { id: 'delete_users', name: 'Delete Users' },
-    { id: 'manage_roles', name: 'Manage Roles' },
-    { id: 'manage_permissions', name: 'Manage Permissions' },
-  ];
+  useEffect(() => {
+    if (editingRole) {
+      setRole(editingRole);
+    }
+  }, [editingRole]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
+    setRole(prevRole => ({ ...prevRole, [name]: value }));
   };
 
-  const handlePermissionChange = (permissionId) => {
-    setFormData(prevState => ({
-      ...prevState,
-      permissions: prevState.permissions.includes(permissionId)
-        ? prevState.permissions.filter(id => id !== permissionId)
-        : [...prevState.permissions, permissionId]
+  const togglePermission = (permission) => {
+    setRole(prevRole => ({
+      ...prevRole,
+      permissions: prevRole.permissions.includes(permission)
+        ? prevRole.permissions.filter(p => p !== permission)
+        : [...prevRole.permissions, permission]
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Here you would typically send the data to your backend
+    onSave(role);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4">
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-          Role Name
-        </label>
-        <input
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="name"
-          type="text"
-          placeholder="Role Name"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
-          Description
-        </label>
-        <textarea
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="description"
-          placeholder="Role Description"
-          rows="3"
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          required
-        ></textarea>
-      </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2">
-          Permissions
-        </label>
-        <div className="grid grid-cols-2 gap-4">
-          {allPermissions.map((permission) => (
-            <label key={permission.id} className="inline-flex items-center">
-              <input
-                type="checkbox"
-                className="form-checkbox text-teal-600"
-                checked={formData.permissions.includes(permission.id)}
-                onChange={() => handlePermissionChange(permission.id)}
-              />
-              <span className="ml-2">{permission.name}</span>
-            </label>
-          ))}
-        </div>
-      </div>
-      <div className="flex items-center justify-between">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-gray-900 text-white rounded-lg p-6 w-full max-w-md relative">
         <button
-          className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors duration-200"
-          type="submit"
+          onClick={onClose}
+          className="absolute top-4 right-4 p-2 rounded-full bg-gray-700 text-gray-300 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
         >
-          Add Role
+          <X className="h-5 w-5" />
         </button>
+        <h3 className="text-lg font-semibold mb-4">{editingRole ? 'Edit Role' : 'Add New Role'}</h3>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-300">Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={role.name}
+              onChange={handleChange}
+              className="mt-1 block w-full bg-gray-800 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label htmlFor="description" className="block text-sm font-medium text-gray-300">Description</label>
+            <textarea
+              id="description"
+              name="description"
+              rows="3"
+              value={role.description}
+              onChange={handleChange}
+              className="mt-1 block w-full bg-gray-800 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            ></textarea>
+          </div>
+          <div>
+            <label htmlFor="riskLevel" className="block text-sm font-medium text-gray-300">Risk Level</label>
+            <select
+              id="riskLevel"
+              name="riskLevel"
+              value={role.riskLevel}
+              onChange={handleChange}
+              className="mt-1 block w-full bg-gray-800 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option>Low</option>
+              <option>Medium</option>
+              <option>High</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Permissions</label>
+            <div className="grid grid-cols-2 gap-2">
+              {['Create', 'Read', 'Update', 'Delete', 'Approve', 'Reject', 'Export', 'Import'].map((permission) => (
+                <button
+                  key={permission}
+                  type="button"
+                  onClick={() => togglePermission(permission)}
+                  className={`px-3 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 ${
+                    role.permissions.includes(permission)
+                      ? 'bg-blue-600 text-white hover:bg-blue-700'
+                      : 'bg-gray-800 text-gray-200 hover:bg-gray-600'
+                  }`}
+                >
+                  {permission}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="flex justify-end space-x-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 border border-gray-600 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+            >
+              {editingRole ? 'Update' : 'Create'}
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
+    </div>
   );
-}
+};
+
+export default RolesForm;
